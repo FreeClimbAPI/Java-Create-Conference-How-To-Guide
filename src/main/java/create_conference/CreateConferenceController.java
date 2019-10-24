@@ -1,12 +1,12 @@
 /* 
  * 1. RUN PROJECT WITH COMMAND: 
  *    `gradle build && java -Dserver.port=0080 -jar build/libs/gs-spring-boot-0.1.0.jar`
- * 2. CALL PERSEPHONY NUMBER ASSOCIATED WITH THE ACCOUNT (CONFIGURED IN PERSEPHONY DASHBOARD)
+ * 2. CALL FreeClimb NUMBER ASSOCIATED WITH THE ACCOUNT (CONFIGURED IN FreeClimb DASHBOARD)
  * 3. EXPECT PROMPT FOR ACCESS CODE TO BE REPEATED TO YOU
  *    ENTER ONE OF THREE conferenceRoomCodes (1, 2, OR 3)
  * 4. EXPECT MESSAGE:
  *    "You will be added to the conference momentarily."
- *    EXPECT A NEW CONFERENCE UNDER YOUR PERSEPHONY ACCOUNT, WHICH CAN BE FOUND VISUALLY IN PERSEPHONY DASHBOARD
+ *    EXPECT A NEW CONFERENCE UNDER YOUR FreeClimb ACCOUNT, WHICH CAN BE FOUND IN FreeClimb DASHBOARD
 */
 
 package main.java.create_conference;
@@ -15,9 +15,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 
-import com.vailsys.persephony.api.PersyException;
-import com.vailsys.persephony.percl.*;
-import com.vailsys.persephony.webhooks.percl.GetDigitsActionCallback;
+import com.vailsys.freeclimb.percl.*;
+
+import com.vailsys.freeclimb.webhooks.percl.GetDigitsActionCallback;
+import com.vailsys.freeclimb.webhooks.conference.ConferenceCreateActionCallback;
+import com.vailsys.freeclimb.webhooks.conference.ConferenceStatusCallback;
+
+import com.vailsys.freeclimb.api.conference.ConferenceStatus;
+import com.vailsys.freeclimb.api.FreeClimbClient;
+import com.vailsys.freeclimb.api.conference.ConferenceUpdateOptions;
+import com.vailsys.freeclimb.api.FreeClimbException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,14 +35,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.LinkedList;
-
-import com.vailsys.persephony.webhooks.conference.ConferenceCreateActionCallback;
-
-import com.vailsys.persephony.webhooks.conference.ConferenceStatusCallback;
-import com.vailsys.persephony.api.conference.ConferenceStatus;
-
-import com.vailsys.persephony.api.PersyClient;
-import com.vailsys.persephony.api.conference.ConferenceUpdateOptions;
 
 @RestController
 public class CreateConferenceController {
@@ -58,9 +58,9 @@ public class CreateConferenceController {
 
   }
 
-  // To properly communicate with Persephony's API, set your Persephony app's
+  // To properly communicate with FreeClimb's API, set your FreeClimb app's
   // VoiceURL endpoint to '{yourApplicationURL}/InboundCall' for this example
-  // Your Persephony app can be configured in the Persephony Dashboard
+  // Your FreeClimb app can be configured in the FreeClimb Dashboard
   @RequestMapping(value = {
       "/InboundCall" }, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity<?> inboundCall() {
@@ -117,7 +117,7 @@ public class CreateConferenceController {
         script.add(makeOrAddToConference(room, digits, callId));
       }
 
-    } catch (PersyException pe) {
+    } catch (FreeClimbException pe) {
       System.out.print(pe);
     }
 
@@ -165,7 +165,7 @@ public class CreateConferenceController {
       // Add initial caller to conference
       script.add(new AddToConference(conferenceId, conferenceCreateActionCallback.getCallId()));
 
-    } catch (PersyException pe) {
+    } catch (FreeClimbException pe) {
       System.out.print(pe);
     }
 
@@ -193,7 +193,7 @@ public class CreateConferenceController {
         try {
           terminateConference(conferenceId);
           room.conferenceId = null;
-        } catch (PersyException pe) {
+        } catch (FreeClimbException pe) {
           // Handle error when terminateConference fails
           System.out.print(pe);
         }
@@ -201,17 +201,17 @@ public class CreateConferenceController {
 
       // after first EMPTY status update conference can be terminated
       room.canConferenceTerminate = true;
-    } catch (PersyException pe) {
+    } catch (FreeClimbException pe) {
       System.out.print(pe);
     }
 
     return new ResponseEntity<>("", HttpStatus.OK);
   }
 
-  private static void terminateConference(String conferenceId) throws PersyException {
+  private static void terminateConference(String conferenceId) throws FreeClimbException {
     String accountId = System.getenv("ACCOUNT_ID");
     String authToken = System.getenv("AUTH_TOKEN");
-    PersyClient client = new PersyClient(accountId, authToken);
+    FreeClimbClient client = new FreeClimbClient(accountId, authToken);
 
     // Create the ConferenceUpdateOptions and set the status to terminated
     ConferenceUpdateOptions conferenceUpdateOptions = new ConferenceUpdateOptions();
