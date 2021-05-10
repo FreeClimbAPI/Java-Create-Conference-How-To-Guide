@@ -210,8 +210,8 @@ public class CreateConferenceController {
 
   private static void terminateConference(String conferenceId) throws FreeClimbException {
     String accountId = System.getenv("ACCOUNT_ID");
-    String authToken = System.getenv("AUTH_TOKEN");
-    FreeClimbClient client = new FreeClimbClient(accountId, authToken);
+    String apiKey = System.getenv("API_KEY");
+    FreeClimbClient client = new FreeClimbClient(accountId, apiKey);
 
     // Create the ConferenceUpdateOptions and set the status to terminated
     ConferenceUpdateOptions conferenceUpdateOptions = new ConferenceUpdateOptions();
