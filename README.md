@@ -1,6 +1,6 @@
-# Java - Create Conference Tutorial
+# Java - Create Conference How-To Guide
 
-This project serves as a guide to help you build an application with FreeClimb. View this tutorial on [FreeClimb.com](https://docs.freeclimb.com/docs/create-a-conference-and-add-participants-1#section-java). Specifically, the project will:
+This project serves as a guide to help you build an application with FreeClimb. View this how-to guide on [FreeClimb.com](https://docs.freeclimb.com/docs/create-a-conference-and-add-participants-1#section-java). Specifically, the project will:
 
 - Accept incoming calls
 - Receive digits from the caller
@@ -13,7 +13,7 @@ This application will receive calls and have users enter the conference code of 
 
 To get started using a FreeClimb account, follow the instructions [here](https://docs.freeclimb.com/docs/getting-started-with-freeclimb).
 
-## Setting up the Tutorial
+## Setting up the how-to guide
 
 1.  Configure environment variables.
 
@@ -23,7 +23,7 @@ To get started using a FreeClimb account, follow the instructions [here](https:/
 | API_KEY   | API key which can be found under [API credentials](https://www.freeclimb.com/dashboard/portal/account/authentication) in Dashboard |
 | HOST         | The host url where your application is hosted (e.g. yourHostedApp.com)                                                                   |
 
-## Building and Runnning the Tutorial
+## Building and runnning the how-to guide
 
 1. Build and run the application using command:
 
